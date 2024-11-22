@@ -15,7 +15,7 @@ usage:
         - aws-cli/setup:
             region: << pipeline.parameters.aws-default-region >>
             role_arn: << pipeline.parameters.role-name >>
-            role_session_name: "CircleCI-${CIRCLE_WORKFLOW_ID}-${CIRCLE_JOB}"
+            role_session_name: "CircleCI-${CIRCLE_WORKFLOW_ID}"
 
   parameters:
     account-id:
