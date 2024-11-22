@@ -1,0 +1,35 @@
+---
+description: >
+  Restore contents of a cache store in S3
+
+parameters:
+  bucket-name:
+    type: string
+    description: "Bucket name for storing caches"
+  cache-key:
+    type: string
+    description: "By default, the branch name will be the cache key"
+    default: << pipeline.git.branch >>
+  s3-max-concurrent-requests:
+    type: integer
+    description: "Maximum number of concurrent S3 requests"
+    default: 20
+  s3-max-queue-size:
+    type: integer
+    description: "Maximum S3 queue size"
+    default: 10000
+  s3-multipart-threshold:
+    type: string
+    description: "S3 multipart upload threshold size"
+    default: "64MB"
+
+steps:
+  - run:
+      environment:
+        BUCKET_NAME: << parameters.bucket-name >>
+        CACHE_KEY: << parameters.cache-key >>
+        MAX_QUEUE_SIZE: << parameters.s3-max-queue-size >>
+        S3_MULTIPART_THRESHOLD: << parameters.s3-multipart-threshold >>
+        MAX_CONCURRENT_REQUESTS: << parameters.s3-max-concurrent-requests >>
+      name: Restore cache from S3 bucket
+      command: <<include(scripts/restore-cache.sh)>>
