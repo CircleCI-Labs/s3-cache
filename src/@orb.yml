@@ -2,9 +2,8 @@
 version: 2.1
 
 description: >
-  Utilize Setup Workflows and the Continuation orb to easily construct dynamic
-  and multi-config pipelines.
+  A CircleCI orb that allows custom S3 buckets for caching in CircleCI workflows 
 
 display:
-  home_url: "https://circleci.com/docs/2.0/dynamic-config/"
-  source_url: "https://github.com/CircleCI-Public/continuation-orb/"
+  home_url: "https://circleci.com/docs/caching/"
+  source_url: "https://github.com/CircleCI-Labs/s3-cache"
