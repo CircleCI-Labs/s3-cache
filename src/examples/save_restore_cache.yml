@@ -47,7 +47,8 @@ usage:
             name: "Create a Dummy Cache"
             command: |
               mkdir << pipeline.parameters.cache-path >>
-              head -c 85765 </dev/urandom > /tmp/cache-dir/cache-file-$CIRCLE_NODE_INDEX
+              cd << pipeline.parameters.cache-path >>
+              head -c 85765 </dev/urandom > cache-file-$CIRCLE_NODE_INDEX
         - s3-cache/save-cache:
             cache-path: << pipeline.parameters.cache-path >>
             bucket-name: cci-labs-bucket
