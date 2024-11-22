@@ -2,7 +2,7 @@
 version: 2.1
 
 description: >
-  An orb that allows caching with custom S3 buckets
+  An orb for managing caching using user-defined S3 buckets
 
 display:
   home_url: "https://circleci.com/docs/caching"
