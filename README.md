@@ -3,6 +3,7 @@
 
 [![CircleCI Build Status](https://circleci.com/gh/CircleCI-Labs/s3-cache.svg?style=shield "CircleCI Build Status")](https://circleci.com/gh/CircleCI-Labs/s3-cache) [![CircleCI Orb Version](https://badges.circleci.com/orbs/cci-labs/s3-cache.svg)](https://circleci.com/developer/orbs/orb/cci-labs/s3-cache) [![GitHub License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/CircleCI-Labs/s3-cache/master/LICENSE) [![CircleCI Community](https://img.shields.io/badge/community-CircleCI%20Discuss-343434.svg)](https://discuss.circleci.com/c/ecosystem/orbs)
 
+---
 **Disclaimer:**
 
 CircleCI Labs, including this repo, is a collection of solutions developed by members of CircleCI's field engineering teams through our engagement with various customer needs.
@@ -10,6 +11,10 @@ CircleCI Labs, including this repo, is a collection of solutions developed by me
 -   ✅ Created by engineers @ CircleCI
 -   ✅ Used by real CircleCI customers
 -   ❌ **not** officially supported by CircleCI support
+
+---
+
+### Example Usage: CircleCI Config with the custom S3 Cache Orb
 
 ```
 
@@ -39,10 +44,10 @@ parameters:
     default: "arn:aws:iam::999999999999:role/awesome_aws_ci_oidc_role"
   cache-path:
     type: string
-    default: "/tmp/cache-entry"
+    default: "/tmp/cache-dir"
   cache-key:
     type: string
-    description: "The domain of the CircleCI installation - defaults to circleci.com. (Only necessary for CircleCI Server users)"
+    description: "Cache Key for storing in S3"
     default: << pipeline.git.branch >>
 jobs:
   s3-custom-cache:
@@ -56,7 +61,7 @@ jobs:
           name: "Create a Dummy Cache"
           command: |
              mkdir << pipeline.parameters.cache-path >>
-             head -c 85765 </dev/urandom > /tmp/cache-entry/cache-file-$CIRCLE_NODE_INDEX
+             head -c 85765 </dev/urandom > /tmp/cache-dir/cache-file-$CIRCLE_NODE_INDEX
       - s3-cache/save-cache:
            cache-path: << pipeline.parameters.cache-path >>
            bucket-name: cci-labs-bucket
