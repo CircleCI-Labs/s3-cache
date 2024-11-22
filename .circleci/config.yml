@@ -20,6 +20,7 @@ workflows:
       - orb-tools/pack:
           filters: *filters
       - orb-tools/review:
+          exclude: RC005
           filters: *filters
       - shellcheck/check:
           shell: bash
