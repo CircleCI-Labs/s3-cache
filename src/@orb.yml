@@ -2,10 +2,8 @@
 version: 2.1
 
 description: >
-  A CircleCI orb that allows custom S3 buckets for caching in CircleCI workflows
+  An orb that allows caching with custom S3 buckets
 
 display:
-  home_url: >
-    https://circleci.com/docs/caching/
-  source_url: >
-    https://github.com/CircleCI-Labs/s3-cache
+  home_url: "https://circleci.com/docs/caching"
+  source_url: "https://github.com/CircleCI-Labs/s3-cache"
