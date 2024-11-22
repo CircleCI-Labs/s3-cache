@@ -4,11 +4,11 @@ description: >
 
 usage:
   version: 2.1
-  
+
   orbs:
     s3-cache: cci-labs/s3-cache@0.0.2
     aws-cli: circleci/aws-cli@4.1.3
-  
+
   commands:
     aws-auth-setup:
       steps:
@@ -16,7 +16,7 @@ usage:
             region: << pipeline.parameters.aws-default-region >>
             role_arn: << pipeline.parameters.role-name >>
             role_session_name: "CircleCI-${CIRCLE_WORKFLOW_ID}-${CIRCLE_JOB}"
-  
+
   parameters:
     account-id:
       type: string
@@ -34,6 +34,7 @@ usage:
       type: string
       description: "Cache Key for storing in S3"
       default: << pipeline.git.branch >>
+
   jobs:
     s3-custom-cache:
       docker:
@@ -45,18 +46,17 @@ usage:
         - run:
             name: "Create a Dummy Cache"
             command: |
-               mkdir << pipeline.parameters.cache-path >>
-               head -c 85765 </dev/urandom > /tmp/cache-dir/cache-file-$CIRCLE_NODE_INDEX
+              mkdir << pipeline.parameters.cache-path >>
+              head -c 85765 </dev/urandom > /tmp/cache-dir/cache-file-$CIRCLE_NODE_INDEX
         - s3-cache/save-cache:
-             cache-path: << pipeline.parameters.cache-path >>
-             bucket-name: cci-labs-bucket
-             cache-key: << pipeline.git.branch >>
+            cache-path: << pipeline.parameters.cache-path >>
+            bucket-name: cci-labs-bucket
+            cache-key: << pipeline.git.branch >>
         - s3-cache/restore-cache:
-             cache-key: << pipeline.git.branch >>
-             bucket-name: cci-labs-bucket
-  
+            cache-key: << pipeline.git.branch >>
+            bucket-name: cci-labs-bucket
 
-workflows:
-  custom-cache-workflow: 
-    jobs:
-      - s3-custom-cache
+  workflows:
+    custom-cache-workflow:
+      jobs:
+        - s3-custom-cache
