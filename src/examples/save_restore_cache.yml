@@ -56,7 +56,6 @@ usage:
         - s3-cache/restore-cache:
             cache-key: << pipeline.git.branch >>
             bucket-name: cci-labs-bucket
-    
     s3-interpolated-cache:
       docker:
         - image: cimg/base:current
@@ -73,9 +72,11 @@ usage:
         - s3-cache/save-cache:
             cache-path: << pipeline.parameters.cache-path >>
             bucket-name: cci-labs-bucket
-            cache-key: '${CIRCLE_PROJECT_REPONAME}-pnpm-packages-v1-{{ checksum "pnpm-lock.yaml" }}'
+            cache-key: >
+              '${CIRCLE_PROJECT_REPONAME}-{{ checksum "pnpm-lock.yaml" }}'
         - s3-cache/restore-cache:
-            cache-key: '${CIRCLE_PROJECT_REPONAME}-pnpm-packages-v1-{{ checksum "pnpm-lock.yaml" }}'
+            cache-key: >
+              '${CIRCLE_PROJECT_REPONAME}-{{ checksum "pnpm-lock.yaml" }}'
             bucket-name: cci-labs-bucket
 
   workflows:
