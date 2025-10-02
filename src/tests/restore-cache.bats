@@ -60,3 +60,24 @@ teardown() {
     [[ "$output" == *"Cache archive successfully downloaded - test-cache-key.tar.gz"* ]]
     [ -f "test-cache-key.tar.gz" ]
 }
+@test "Cache key interpolation with environment variables and checksum" {
+    # Create a test file for checksum
+    echo "test content" > pnpm-lock.yaml
+    
+    # Set environment variables
+    export CIRCLE_PROJECT_REPONAME="myproject"
+    export CACHE_KEY='${CIRCLE_PROJECT_REPONAME}-v1-{{ checksum "pnpm-lock.yaml" }}'
+    
+    # Source the process_cache_key function from restore-cache.sh
+    ( source ../../scripts/restore-cache.sh 2>/dev/null ) || true
+    
+    # Process the cache key
+    PROCESSED_KEY=$(process_cache_key "$CACHE_KEY")
+    
+    # Verify the key starts with the project name
+    [[ "$PROCESSED_KEY" == myproject-v1-* ]]
+    
+    # Verify the key doesn't contain the literal template syntax
+    [[ "$PROCESSED_KEY" != *'${CIRCLE_PROJECT_REPONAME}'* ]]
+    [[ "$PROCESSED_KEY" != *'{{ checksum'* ]]
+}
