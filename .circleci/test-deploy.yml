@@ -39,7 +39,6 @@ workflows:
           requires:
             - orb-tools/pack
             - command-tests
-            - integration-test-interpolation
           context: orb-publishing
           filters:
             branches:
