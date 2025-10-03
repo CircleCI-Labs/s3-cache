@@ -17,7 +17,7 @@ jobs:
       - s3-cache/save-cache:
           bucket-name: cci-labs-bucket
           cache-key: << pipeline.git.branch >>
-          cache-path: << pipeline.parameters.cache-path >>
+          cache-path: "helo-world"
 
 workflows:
   test-deploy:
