@@ -4,11 +4,22 @@ orbs:
   orb-tools: circleci/orb-tools@11.5
   shellcheck: circleci/shellcheck@3.1
   cli: circleci/circleci-cli@0.1.9
+  bats: circleci/bats@1.1.0
 
 filters: &filters
   tags:
     only: /.*/
 
+jobs:
+  run-tests:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - bats/install
+      - run:
+          name: Run BATS tests
+          command: bats src/tests/*.bats
 
 workflows:
   lint-pack:
@@ -25,6 +36,8 @@ workflows:
       - shellcheck/check:
           shell: bash
           filters: *filters
+      - run-tests:
+          filters: *filters
       - orb-tools/publish:
           orb-name: cci-labs/s3-cache
           vcs-type: << pipeline.project.type >>
@@ -33,6 +46,7 @@ workflows:
             - orb-tools/review
             - orb-tools/pack
             - shellcheck/check
+            - run-tests
       
           # Use a context to hold your publishing token.
           context: orb-publishing

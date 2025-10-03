@@ -86,6 +86,55 @@ Tests can contain any valid shell code. Any error codes returned during a test w
 
 In this example, we grep the contents of `log.txt.` which should contain a `success` result if the `CreatePackage` function we had loaded executed successfully.
 
+## Running Tests Locally
+
+To run the tests locally, you'll need to install BATS-Core:
+
+### Prerequisites
+
+**macOS:**
+- Homebrew package manager
+- Bash 3.2 or higher (pre-installed on macOS)
+
+**Linux:**
+- Bash 3.2 or higher
+- Git (for installing from source)
+- Standard build tools (make, etc.)
+
+### Installation
+
+**macOS:**
+```bash
+brew install bats-core
+```
+
+**Linux (Ubuntu/Debian):**
+```bash
+sudo apt-get update
+sudo apt-get install bats
+```
+
+**Linux (from source):**
+```bash
+git clone https://github.com/bats-core/bats-core.git
+cd bats-core
+sudo ./install.sh /usr/local
+```
+
+### Running Tests
+
+From the repository root, run:
+
+```bash
+bats src/tests/restore-cache.bats
+```
+
+Or to run all tests in the tests directory:
+
+```bash
+bats src/tests/*.bats
+```
+
 ## See:
  - [BATS Orb](https://circleci.com/orbs/registry/orb/circleci/bats)
  - [Orb Testing CircleCI Docs](https://circleci.com/docs/2.0/testing-orbs)

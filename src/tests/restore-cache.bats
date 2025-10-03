@@ -41,21 +41,21 @@ teardown() {
 
 @test "Exit with error if CACHE_KEY is not set" {
     unset CACHE_KEY
-    run ./test-script.sh
+    run bash "$BATS_TEST_DIRNAME/../scripts/restore-cache.sh"
     [ "$status" -eq 1 ]
     [[ "$output" == *"Error: CACHE_KEY or CACHE_PATH is not set. Exiting..."* ]]
 }
 
 @test "Exit with error if S3 object does not exist" {
     export CACHE_KEY="nonexistent-cache-key"
-    run ./test-script.sh
+    run bash "$BATS_TEST_DIRNAME/../scripts/restore-cache.sh"
     [ "$status" -eq 1 ]
     [[ "$output" == *"Error: Cache archive not found in S3."* ]]
 }
 
 @test "Download the archive successfully if it exists" {
     export CACHE_KEY="test-cache-key"
-    run ./test-script.sh
+    run bash "$BATS_TEST_DIRNAME/../scripts/restore-cache.sh"
     [ "$status" -eq 0 ]
     [[ "$output" == *"Cache archive successfully downloaded - test-cache-key.tar.gz"* ]]
     [ -f "test-cache-key.tar.gz" ]
