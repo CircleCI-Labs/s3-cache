@@ -14,15 +14,15 @@ jobs:
       - image: cimg/base:current
     steps:
       - checkout
-      - run:
-          name: Create test cache directory
-          command: |
-            mkdir -p test-cache
-            echo "test data" > test-cache/data.txt
-      - continuation/save-cache:
-          bucket-name: cci-labs-bucket
-          cache-key: '${CIRCLE_PROJECT_REPONAME}-v1-{{ checksum "package-lock.json" }}'
-          cache-path: "test-cache"
+      # - run:
+      #     name: Create test cache directory
+      #     command: |
+      #       mkdir -p test-cache
+      #       echo "test data" > test-cache/data.txt
+      # - continuation/save-cache:
+      #     bucket-name: cci-labs-bucket
+      #     cache-key: '${CIRCLE_PROJECT_REPONAME}-v1-{{ checksum "package-lock.json" }}'
+      #     cache-path: "test-cache"
 
 workflows:
   test-deploy:

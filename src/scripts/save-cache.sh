@@ -10,7 +10,7 @@ process_cache_key() {
   
   # Process checksum functions: {{ checksum "filename" }} or {{ checksum filename }}
   # Match both quoted and unquoted filenames (quotes may be stripped by eval)
-  while [[ "$key" =~ \{\{[[:space:]]*checksum[[:space:]]+\"?([^\"}\s]+)\"?[[:space:]]*\}\} ]]; do
+  while [[ "$key" =~ \{\{[[:space:]]*checksum[[:space:]]+\"?([^\"\}[:space:]]+)\"?[[:space:]]*\}\} ]]; do
     local file="${BASH_REMATCH[1]}"
     local checksum_value=""
     
