@@ -14,6 +14,10 @@ jobs:
       - image: cimg/base:current
     steps:
       - checkout
+      - s3-cache/save-cache:
+          bucket-name: cci-labs-bucket
+          cache-key: << pipeline.git.branch >>
+          cache-path: << pipeline.parameters.cache-path >>
 
 workflows:
   test-deploy:
