@@ -15,6 +15,16 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Create lock file for checksum testing
+          command: |
+            cat > package-lock.json \<<EOF
+            {
+              "name": "test-project",
+              "version": "1.0.0",
+              "lockfileVersion": 2
+            }
+            EOF
+      - run:
           name: Create test cache directory
           command: |
             mkdir -p test-cache
