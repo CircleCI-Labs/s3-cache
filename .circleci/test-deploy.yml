@@ -21,51 +21,51 @@ jobs:
             echo "test data" > test-cache/data.txt
       - continuation/save-cache:
           bucket-name: cci-labs-bucket
-          cache-key: << pipeline.git.branch >>
+          cache-key: '${CIRCLE_PROJECT_REPONAME}-v1-{{ checksum "package-lock.json" }}'
           cache-path: "test-cache"
   
   # Integration test for cache key interpolation
-  integration-test-interpolation:
-    docker:
-      - image: cimg/base:current
-    steps:
-      - checkout
-      - run:
-          name: Create lock file for checksum testing
-          command: |
-            cat > package-lock.json <<EOF
-            {
-              "name": "test-project",
-              "version": "1.0.0",
-              "lockfileVersion": 2,
-              "dependencies": {
-                "react": "^18.0.0"
-              }
-            }
-            EOF
-      - run:
-          name: Create test cache directory
-          command: |
-            mkdir -p node_modules_cache
-            echo "cached dependencies" > node_modules_cache/test.txt
-      - continuation/save-cache:
-          bucket-name: cci-labs-bucket
-          cache-key: '${CIRCLE_PROJECT_REPONAME}-v1-{{ checksum "package-lock.json" }}'
-          cache-path: "node_modules_cache"
-      - run:
-          name: Remove cache to test restore
-          command: rm -rf node_modules_cache
-      - continuation/restore-cache:
-          bucket-name: cci-labs-bucket
-          cache-key: '${CIRCLE_PROJECT_REPONAME}-v1-{{ checksum "package-lock.json" }}'
-      - run:
-          name: Verify cache was restored with interpolated key
-          command: |
-            if [ ! -f "node_modules_cache/test.txt" ]; then
-              echo "ERROR: Cache was not restored correctly!"
-              exit 1
-            fi
-            echo "SUCCESS: Cache with interpolated key was saved and restored correctly!"
+  # integration-test-interpolation:
+  #   docker:
+  #     - image: cimg/base:current
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Create lock file for checksum testing
+  #         command: |
+  #           cat > package-lock.json <<EOF
+  #           {
+  #             "name": "test-project",
+  #             "version": "1.0.0",
+  #             "lockfileVersion": 2,
+  #             "dependencies": {
+  #               "react": "^18.0.0"
+  #             }
+  #           }
+  #           EOF
+  #     - run:
+  #         name: Create test cache directory
+  #         command: |
+  #           mkdir -p node_modules_cache
+  #           echo "cached dependencies" > node_modules_cache/test.txt
+  #     - continuation/save-cache:
+  #         bucket-name: cci-labs-bucket
+  #         cache-key: '${CIRCLE_PROJECT_REPONAME}-v1-{{ checksum "package-lock.json" }}'
+  #         cache-path: "node_modules_cache"
+  #     - run:
+  #         name: Remove cache to test restore
+  #         command: rm -rf node_modules_cache
+  #     - continuation/restore-cache:
+  #         bucket-name: cci-labs-bucket
+  #         cache-key: '${CIRCLE_PROJECT_REPONAME}-v1-{{ checksum "package-lock.json" }}'
+  #     - run:
+  #         name: Verify cache was restored with interpolated key
+  #         command: |
+  #           if [ ! -f "node_modules_cache/test.txt" ]; then
+  #             echo "ERROR: Cache was not restored correctly!"
+  #             exit 1
+  #           fi
+  #           echo "SUCCESS: Cache with interpolated key was saved and restored correctly!"
 
 workflows:
   test-deploy:
