@@ -8,8 +8,9 @@ process_cache_key() {
   # Using eval to expand environment variables in the string
   key=$(eval echo "$key")
   
-  # Process checksum functions: {{ checksum "filename" }}
-  while [[ "$key" =~ \{\{[[:space:]]*checksum[[:space:]]+\"([^\"]+)\"[[:space:]]*\}\} ]]; do
+  # Process checksum functions: {{ checksum "filename" }} or {{ checksum filename }}
+  # Match both quoted and unquoted filenames (quotes may be stripped by eval)
+  while [[ "$key" =~ \{\{[[:space:]]*checksum[[:space:]]+\"?([^\"}\s]+)\"?[[:space:]]*\}\} ]]; do
     local file="${BASH_REMATCH[1]}"
     local checksum_value=""
     
@@ -36,10 +37,13 @@ process_cache_key() {
     fi
     
     # Replace the checksum pattern with the actual checksum value
+    # Handle both quoted and unquoted versions
     key="${key//\{\{ checksum \"$file\" \}\}/$checksum_value}"
     key="${key//\{\{checksum \"$file\"\}\}/$checksum_value}"
-    # Handle various spacing variations
-    key=$(echo "$key" | sed -E "s/\{\{[[:space:]]*checksum[[:space:]]+\"$(echo "$file" | sed 's/[\/&]/\\&/g')\"[[:space:]]*\}\}/$checksum_value/g")
+    key="${key//\{\{ checksum $file \}\}/$checksum_value}"
+    key="${key//\{\{checksum $file\}\}/$checksum_value}"
+    # Handle various spacing variations with sed
+    key=$(echo "$key" | sed -E "s/\{\{[[:space:]]*checksum[[:space:]]+\"?$(echo "$file" | sed 's/[\/&]/\\&/g')\"?[[:space:]]*\}\}/$checksum_value/g")
   done
   
   echo "$key"
