@@ -9,13 +9,22 @@ if [ -z "$CACHE_KEY" ]; then
 fi
 
 # Check if the archive exists in the S3 bucket
-echo "Checking if s3://$BUCKET_NAME/$CACHE_KEY/$CACHE_KEY.tar.gz exists..."
-if aws s3 ls "s3://$BUCKET_NAME/$CACHE_KEY/$CACHE_KEY.tar.gz" > /dev/null 2>&1; then
+echo "Checking if s3://$BUCKET_NAME/$CACHE_KEY/$CACHE_KEY.tar.zst exists..."
+if aws s3 ls "s3://$BUCKET_NAME/$CACHE_KEY/$CACHE_KEY.tar.zst" > /dev/null 2>&1; then
     echo "Cache archive found. Downloading..."
     
     # Download the archive from the S3 bucket
-    if aws s3 cp "s3://$BUCKET_NAME/$CACHE_KEY/$CACHE_KEY.tar.gz" "$CACHE_KEY.tar.gz"; then
-        echo "Cache archive successfully downloaded - $CACHE_KEY.tar.gz"
+    if aws s3 cp "s3://$BUCKET_NAME/$CACHE_KEY/$CACHE_KEY.tar.zst" "$CACHE_KEY.tar.zst"; then
+        echo "Cache archive successfully downloaded - $CACHE_KEY.tar.zst"
+        
+        # Extract the archive with zstd decompression
+        echo "Extracting cache archive..."
+        if tar --use-compress-program=zstd -xf "$CACHE_KEY.tar.zst" -C /; then
+            echo "Cache successfully restored"
+        else
+            echo "Error: Failed to extract cache archive."
+            exit 1
+        fi
     else
         echo "Error: Failed to download cache archive from S3."
         exit 1
